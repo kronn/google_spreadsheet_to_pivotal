@@ -1,0 +1,7 @@
+As a developer
+I want to integrate Pivotal and GoogleSpreadsheets
+In order to move priotized work units into my current sprint
+
+Our ProductOwner uses Google Docs (Spreadsheets, specifically) to work with the
+product backlog. One Spreadsheets contains the prioritized stories. Currently,
+it's copy and paste. I want to drag and drop.
