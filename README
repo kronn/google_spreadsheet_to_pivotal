@@ -5,3 +5,56 @@ In order to move priotized work units into my current sprint
 Our ProductOwner uses Google Docs (Spreadsheets, specifically) to work with the
 product backlog. One Spreadsheets contains the prioritized stories. Currently,
 it's copy and paste. I want to drag and drop.
+
+== INSTALL
+
+1. Grab a copy of the source
+
+    git clone git://github.com/kronn/google_spreadsheet_to_pivotal.git
+
+2. Create a Heroku app
+
+    heroku create myapp
+
+3. Set some heroku vars
+
+    # username and password of the user who can access (at least read) the spreadsheet
+
+    heroku config:add SPREADSHEET_USERNAME=someone@googlemail.com SPREADSHEET_PASSWORD=password
+
+    # First worksheet of http://spreadsheets.google.com/ccc?key=pz7XtlQC-PYx-jrVMJErTcg&hl=en
+
+    heroku config:add SPREADSHEET_KEY="pz7XtlQC-PYx-jrVMJErTcg"
+
+    # Mapping of fields
+
+    heroku config:add SPREADSHEET_MAPPING='id-slug-name--estimate'
+
+    # You can leave the requestor blank, if you like.
+
+    heroku config:add SPREADSHEET_REQUESTOR="John Smith"
+
+4. Pick a username and a passswordfor Pivotal to use
+
+    heroku config:add HTTP_BASIC_USERNAME=pivotal HTTP_BASIC_PASSWORD=password
+
+5. Deploy to Heroku
+
+    git push heroku master
+
+6. Test you're getting XML back
+
+    open http://myapp.heroku.com/
+
+7. Add the integration to Pivotal. From the "Configure Integrations" page, add an "Other" integration.
+
+    * **Name:** Product Backlog
+    * **Basic Auth username:** What you picked for HTTP_BASIC_USERNAME
+    * **Basic Auth password:** What you picked for HTTP_BASIC_PASSWORD
+    * **Base URL:** hmm.
+    * **Import API URL:** http://myapp.heroku.com/
+    * **Active: Yes**
+
+12. From the "More" menu of Pivotal Tracker you should see "Product Backlog"
+
+13. Buy me a beer.
