@@ -1,5 +1,6 @@
 require 'sinatra/base'
-require
+require './spreadsheet_stories'
+require './pivotal'
 
 class SpreadsheetToPivotal < Sinatra::Base
   $spreadsheet = Spreadsheet.new(
