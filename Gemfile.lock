@@ -1,0 +1,30 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    addressable (2.2.6)
+    builder (3.0.0)
+    google-spreadsheet-ruby (0.1.5)
+      nokogiri (>= 1.4.3.1)
+      oauth (>= 0.3.6)
+    heroku (2.7.0)
+      launchy (>= 0.3.2)
+      rest-client (~> 1.6.1)
+      rubyzip
+      term-ansicolor (~> 1.0.5)
+    launchy (2.0.5)
+      addressable (~> 2.2.6)
+    mime-types (1.16)
+    nokogiri (1.5.0)
+    oauth (0.4.5)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+    rubyzip (0.9.4)
+    term-ansicolor (1.0.6)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  builder
+  google-spreadsheet-ruby
+  heroku
