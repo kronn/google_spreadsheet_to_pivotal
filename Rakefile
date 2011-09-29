@@ -11,7 +11,7 @@ task :setup => :configure do
   config = read_local_config
 
   # push the app itself to heroku
-  # heroku.git "push heroku master"
+  heroku.git "push heroku master"
 
   puts <<-EOT
 
