@@ -1,19 +1,48 @@
 desc "setup bridging app on heroku"
-task :setup => 'config.yml' do
+task :setup => :configure do
   require 'heroku'
   heroku = Heroku::Auth.client
+  include SetupHelper
 
-  # check wether we have an app on heroku and create one if necessary
-  if git_remote = heroku.git("config remote.heroku.url")
-    app_name = git_remote.scan(/.*:([-a-zA-Z0-9]+)\.git/).flatten.first
-    puts "found heroku app named '#{app_name}'"
-  else
-    puts 'creating app on heroku'
-    app_name = heroku.create(nil, {:stack => 'bamboo-mri-1.9.2'})
-    heroku.git "remote add heroku git@#{heroku.host}:#{app_name}.git"
-    puts "#{app_name} created and git remote added"
-  end
+  puts ''
+  app_name = find_or_create_app
+  config = read_local_config
 
+  # push the app itself to heroku
+  # heroku.git "push heroku master"
+
+  puts <<-EOT
+
+  It seems like we could set everything up on heroku.
+
+  You should test that the app gives you XML back
+
+    open http://#{app_name}.heroku.com/
+
+  In order to complete the installation, you need to add the integration
+  to Pivotal
+
+  From the "Configure Integrations" page, add an "Other" integration.
+
+    * Name:                Product Backlog
+    * Basic Auth username: #{config['http_basic']['username']}
+    * Basic Auth password: #{config['http_basic']['password']}
+    * Base URL:  "The base-url prepended to the ID for external linking"
+    * Import API URL:      http://#{app_name}.heroku.com/
+    * Active:              Yes
+
+  From the "More" menu of Pivotal Tracker you should see "Product Backlog"
+
+  EOT
+end
+
+desc "configure bridging app"
+task :configure => 'config.yml' do
+  require 'heroku'
+  heroku = Heroku::Auth.client
+  include SetupHelper
+
+  app_name = find_or_create_app(heroku)
   config = read_local_config
 
   # add the local config variables to the application
@@ -26,6 +55,7 @@ task :setup => 'config.yml' do
     "HTTP_BASIC_USERNAME"   => config['http_basic']['username'],
     "HTTP_BASIC_PASSWORD"   => config['http_basic']['password']
   })
+  puts "configuration set"
 end
 
 file "config.yml" => "config.yml.example" do
@@ -44,14 +74,31 @@ file "config.yml" => "config.yml.example" do
   EOT
 end
 
-def read_local_config
-  require 'pathname'
-  require 'yaml'
-  fn = Pathname.new("./config.yml").expand_path
+module SetupHelper
+  def find_or_create_app(heroku)
+    # check wether we have an app on heroku and create one if necessary
+    if git_remote = heroku.git("config remote.heroku.url")
+      app_name = git_remote.scan(/.*:([-a-zA-Z0-9]+)\.git/).flatten.first
+      puts "found heroku app named '#{app_name}'"
+    else
+      puts 'creating app on heroku'
+      app_name = heroku.create(nil, {:stack => 'bamboo-mri-1.9.2'})
+      heroku.git "remote add heroku git@#{heroku.host}:#{app_name}.git"
+      puts "#{app_name} created and git remote added"
+    end
 
-  if fn.exist?
-    YAML.load_file(fn)
-  else
-    nil
+    app_name
+  end
+
+  def read_local_config
+    require 'pathname'
+    require 'yaml'
+    fn = Pathname.new("./config.yml").expand_path
+
+    if fn.exist?
+      YAML.load_file(fn)
+    else
+      nil
+    end
   end
 end
