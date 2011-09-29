@@ -1,0 +1,10 @@
+spreadsheet:
+  username: "someone@googlemail.com"
+  password: "password"
+  key: "pz7XtlQC-PYx-jrVMJErTcg"
+  mapping: "id-slug-name--estimate"
+  requestor: "Product Owner"
+
+http_basic:
+  username: "pivotal"
+  password: "password
