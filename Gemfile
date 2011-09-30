@@ -2,6 +2,7 @@ source :rubygems
 
 gem 'google-spreadsheet-ruby'
 
+gem 'sinatra'
 gem 'builder'
 gem 'heroku'
 
