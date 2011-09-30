@@ -7,4 +7,4 @@ spreadsheet:
 
 http_basic:
   username: "pivotal"
-  password: "password
+  password: "password"
