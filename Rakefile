@@ -7,7 +7,7 @@ task :setup => :configure do
   include SetupHelper
 
   puts ''
-  app_name = find_or_create_app
+  app_name = find_or_create_app(heroku, :silent => true)
   config = read_local_config
 
   # push the app itself to heroku
@@ -79,16 +79,16 @@ file "config.yml" => "config.yml.example" do
 end
 
 module SetupHelper
-  def find_or_create_app(heroku)
+  def find_or_create_app(heroku, options = {})
     # check wether we have an app on heroku and create one if necessary
     if git_remote = heroku.git("config remote.heroku.url")
       app_name = git_remote.scan(/.*:([-a-zA-Z0-9]+)\.git/).flatten.first
-      puts "  found heroku app named '#{app_name}'"
+      puts "  found heroku app named '#{app_name}'" unless options[:silent]
     else
-      puts '  creating app on heroku'
+      puts '  creating app on heroku' unless options[:silent]
       app_name = heroku.create(nil, {:stack => 'bamboo-mri-1.9.2'})
       heroku.git "remote add heroku git@#{heroku.host}:#{app_name}.git"
-      puts "  #{app_name} created and git remote added"
+      puts "  #{app_name} created and git remote added" unless options[:silent]
     end
 
     app_name
