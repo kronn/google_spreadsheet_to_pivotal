@@ -28,7 +28,7 @@ class SpreadsheetStories
       cols.each do |name, col|
         story[name] = worksheet[row,col]
       end
-      story['created_at'] = Time.now.utc if story['created_at'].to_s == ""
+      story['created_at'] = Time.now.utc.to_s if story['created_at'].to_s == ""
       story if story['id'].to_i > 0
     end.compact
   end
