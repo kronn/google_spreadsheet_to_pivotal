@@ -3,7 +3,7 @@ require './spreadsheet_stories'
 require './pivotal'
 
 class SpreadsheetToPivotal < Sinatra::Base
-  $spreadsheet = Spreadsheet.new(
+  $spreadsheet = SpreadsheetStories.new(
     ENV["SPREADSHEET_USERNAME"],
     ENV["SPREADSHEET_PASSWORD"],
     ENV["SPREADSHEET_KEY"],

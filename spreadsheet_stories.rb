@@ -4,7 +4,7 @@ class SpreadsheetStories
   attr_reader :worksheet, :mapping
 
   def initialize(user, pass, key, mapping)
-    @mapping = mapping.split('-')
+    @mapping = mapping.to_s.split('-')
     session = GoogleSpreadsheet.login(user, pass)
     @worksheet = session.spreadsheet_by_key(key).worksheets[0]
   end
