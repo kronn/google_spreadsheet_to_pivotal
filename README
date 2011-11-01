@@ -4,7 +4,7 @@ In order to move priotized work units into my current sprint
 
 Our ProductOwner uses Google Docs (Spreadsheets, specifically) to work with the
 product backlog. One Spreadsheets contains the prioritized stories. Currently,
-it's copy and paste. I want to drag and drop.
+it's copy and paste. I want to drag and drop. Even better, I want him to do that.
 
 == INSTALL
 
@@ -12,49 +12,58 @@ it's copy and paste. I want to drag and drop.
 
     git clone git://github.com/kronn/google_spreadsheet_to_pivotal.git
 
-2. Create a Heroku app
+2. Set everything up
 
-    heroku create myapp
+    bundle install
+    rake setup
 
-3. Set some heroku vars
+    This installs the dependencies, creates a heroku app and updates the
+    configuration.
 
-    # username and password of the user who can access (at least read) the spreadsheet
+    If you really read the README first and don't have a configuration-file
+     yet, rake will provide further instructions.
 
-    heroku config:add SPREADSHEET_USERNAME=someone@googlemail.com SPREADSHEET_PASSWORD=password
+    If everything worked, you get the information about how to setup the 
+    integration in the pivotal tracker.
 
-    # First worksheet of http://spreadsheets.google.com/ccc?key=pz7XtlQC-PYx-jrVMJErTcg&hl=en
+== CONFIGURATION VARIABLES
 
-    heroku config:add SPREADSHEET_KEY="pz7XtlQC-PYx-jrVMJErTcg"
+```
+spreadsheet:
+  username: "someone@googlemail.com"
+  password: "password"
+  key: "pz7XtlQC-PYx-jrVMJErTcg"
+  mapping: "id-name-description-estimate"
+  requestor: "Product Owner"
 
-    # Mapping of fields
+http_basic:
+  username: "pivotal"
+  password: "password"
+```
 
-    heroku config:add SPREADSHEET_MAPPING='id-slug-name--estimate'
+=== SPREADSHEET
 
-    # You can leave the requestor blank, if you like.
+==== USERNAME/PASSWORD
+username and password are the access-credentials of a user who can access (at
+least read) the spreadsheet
 
-    heroku config:add SPREADSHEET_REQUESTOR="John Smith"
+==== KEY
+the key is taken from the url of the spreadsheet in question
 
-4. Pick a username and a passswordfor Pivotal to use
+in http://spreadsheets.google.com/ccc?key=pz7XtlQC-PYx-jrVMJErTcg&hl=en
+the key would be "pz7XtlQC-PYx-jrVMJErTcg"
 
-    heroku config:add HTTP_BASIC_USERNAME=pivotal HTTP_BASIC_PASSWORD=password
+==== Mapping of fields
 
-5. Deploy to Heroku
+"id-name-description-estimate" maps the given columns to the respective values
+in the xml delivered to pivotal. column names are separated by a -, so you can
+skip a column if you add more dashes.
 
-    git push heroku master
+==== REQUESTOR
 
-6. Test you're getting XML back
+You can leave the requestor blank, if you like.
 
-    open http://myapp.heroku.com/
+=== HTTP_BASIC
 
-7. Add the integration to Pivotal. From the "Configure Integrations" page, add an "Other" integration.
+Pick a username and a passswordfor Pivotal to use
 
-    * **Name:** Product Backlog
-    * **Basic Auth username:** What you picked for HTTP_BASIC_USERNAME
-    * **Basic Auth password:** What you picked for HTTP_BASIC_PASSWORD
-    * **Base URL:** hmm.
-    * **Import API URL:** http://myapp.heroku.com/
-    * **Active: Yes**
-
-12. From the "More" menu of Pivotal Tracker you should see "Product Backlog"
-
-13. Buy me a beer.
