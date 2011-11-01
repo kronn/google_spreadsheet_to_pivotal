@@ -11,7 +11,8 @@ task :setup => :configure do
   config = read_local_config
 
   # push the app itself to heroku
-  heroku.git "push heroku master"
+  STDOUT.sync = true
+  system('git push heroku master')
 
   puts <<-EOT
 
@@ -49,17 +50,17 @@ task :configure => 'config.yml' do
   config = read_local_config
 
   # add the local config variables to the application
-  heroku.add_config_vars(app_name, {
-    "SPREADSHEET_USERNAME"  => config['spreadsheet']['username'],
-    "SPREADSHEET_PASSWORD"  => config['spreadsheet']['password'],
-    "SPREADSHEET_KEY"       => config['spreadsheet']['key'],
-    "SPREADSHEET_MAPPING"   => config['spreadsheet']['mapping'],
-    "SPREADSHEET_REQUESTOR" => config['spreadsheet']['requestor'],
-    "HTTP_BASIC_USERNAME"   => config['http_basic']['username'],
-    "HTTP_BASIC_PASSWORD"   => config['http_basic']['password']
-  })
+  heroku.add_config_vars(app_name, map_config(config))
   puts "  configuration sent to heroku"
   puts ''
+end
+
+desc "apply configuration locally"
+task :local_configuration => 'config.yml' do
+  include SetupHelper
+  map_config(read_local_config).each do |key, value|
+    puts %Q(export #{key}="#{value}")
+  end
 end
 
 file "config.yml" => "config.yml.example" do
@@ -104,5 +105,17 @@ module SetupHelper
     else
       nil
     end
+  end
+
+  def map_config(config)
+    {
+      "SPREADSHEET_USERNAME"  => config['spreadsheet']['username'],
+      "SPREADSHEET_PASSWORD"  => config['spreadsheet']['password'],
+      "SPREADSHEET_KEY"       => config['spreadsheet']['key'],
+      "SPREADSHEET_MAPPING"   => config['spreadsheet']['mapping'],
+      "SPREADSHEET_REQUESTOR" => config['spreadsheet']['requestor'],
+      "HTTP_BASIC_USERNAME"   => config['http_basic']['username'],
+      "HTTP_BASIC_PASSWORD"   => config['http_basic']['password']
+    }
   end
 end
