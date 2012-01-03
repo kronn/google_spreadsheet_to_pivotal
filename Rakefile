@@ -118,4 +118,37 @@ module SetupHelper
       "HTTP_BASIC_PASSWORD"   => config['http_basic']['password']
     }
   end
+
+  def create_oauth2_token
+    raise NotImplementedError, 'Somebody was to lazy to implement this. You can help.'
+    config = read_local_config
+
+    # Google Spreadsheet and OAuth:
+    # http://gimite.net/gimite/rubymess/google-spreadsheet-ruby/GoogleSpreadsheet.html#method-c-login_with_oauth
+    #
+    # Google's OAuth2
+    # http://code.google.com/intl/de-DE/apis/accounts/docs/OAuth2.html
+    #
+    # You need to generate a client-id and secret-pair for the app
+    # https://code.google.com/apis/console/
+    client_id     = '123'
+    client_secret = 'abc'
+
+    client = OAuth2::Client.new(
+      client_id, client_secret,
+      :site => "https://accounts.google.com",
+      :token_url => "/o/oauth2/token",
+      :authorize_url => "/o/oauth2/auth")
+
+    auth_url = client.auth_code.authorize_url(
+      :redirect_uri => "http://example.com/",
+      "scope" => "https://spreadsheets.google.com/feeds https://docs.google.com/feeds/"
+    )
+
+    # Redirect the user to auth_url and get authorization code from redirect URL.
+    auth_token = client.auth_code.get_token(
+      authorization_code, :redirect_uri => "http://example.com/"
+    )
+      session = GoogleSpreadsheet.login_with_oauth(auth_token)
+  end
 end
