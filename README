@@ -67,3 +67,8 @@ You can leave the requestor blank, if you like.
 
 Pick a username and a passswordfor Pivotal to use
 
+== AUTHENTICATION PROBLEMS
+
+If you exprience a crashed app, the underlying cause might be that you need to
+enter a captcha. The app cannot do that. You can however log in manually and
+thereby satisfy the captcha-requirement. Google remembers that for a while.
